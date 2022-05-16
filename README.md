@@ -24,3 +24,8 @@ $ ls
 4. Wi-Fi マークが？または接続マークが出たら成功
   
 ## 1.2 プログラムを実行
+1. ターミナルでTello-Console ディレクトリに移動します。
+```bash
+$ cd Tello-Console
+```
+3. sample-Flight
