@@ -11,7 +11,7 @@ def main(): # メイン関数
         drone.cw(360) # 360°旋回
         drone.land() # 着陸
     
-    except KeyboadInterput: # Cntrol + C が押されたら以下の処理を実行
+    except KeyboardInterrupt: # Cntrol + C が押されたら以下の処理を実行
         drone.emergency() # モーター停止
     
     del drone
