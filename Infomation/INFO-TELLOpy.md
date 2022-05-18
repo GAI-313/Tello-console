@@ -24,7 +24,15 @@ import cv2
 import sys
 ```
 ## 02 SetClass
+```python
+class console():
+```
+ここでクラスが定義されています。
 ## 03 Init
+```python
+  def __init__(self,cmd_timeout=3, tello_ip='192.168.10.1', tello_port=8889):
+```
+この関数は、クラスが実行された際の初期値を定義する関数です。クラス内に記述されるこの関数はメゾットと呼ばれます。メゾットには、必ず第1引数に self を定義します。
 ## 04 Del
 ## 05 Recver
 ## 06 Video Recver
