@@ -1,1 +1,1 @@
-Infomation.md をみてください
+# INFO-TELLOpy.md を開いて参照してください
