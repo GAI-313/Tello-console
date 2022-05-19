@@ -27,7 +27,7 @@ $ nano ~/.nanorc
 # 行番号を表示
 set linenumbers
 # インデント位置を保持する
-set sutoindent
+set autoindent
 # インデントサイズを4マス分に設定
 set tabsize 4
 # スクロールをスムーズにする
