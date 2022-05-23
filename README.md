@@ -124,5 +124,5 @@ $ cd Tello-Console
  ## 1.3 sample_video.py を実行
  このプログラムによりドローンは離陸しません。このプログラムでは、Open-CV を使ってドローンからカメラデータを取得し、映像を出力します。プログラムが実行されると、カメラウィンドウが表示され、ドローンからの映像がリアルタイムで表示されます。
  # Infomation
- Tello-Condsoleのtello.pyの詳細については、Infomation/INFO-TELLOpy.md を参照してください
+ Tello-Condsoleのtello.pyの詳細については、Infomation/README.md を参照してください
 
