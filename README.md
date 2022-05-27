@@ -86,18 +86,41 @@ $ code
   
 　はじめに、以下のコマンドを入力してください。
  ```bash
- python3 -V
+ $ python3 -V
  ```
  注意：コピペせずにコマンドを入力している方、-V は大文字です。小文字ではありません
    
  このコマンドを実行してエラーが出たら、以下のコマンドを実行してください。
  ```bash
-sudo apt install python3-pip
+$ sudo apt install python3-pip
 ```
-終了したら、もう一度2つ前のコマンドを実行して、エラーが出ないことを確認してください。確認ができたら、次は以下のコマンドを実行してください。
+終了したら、もう一度2つ前のコマンドを実行して、エラーが出ないことを確認してください。確認ができたら、次は以下のコマンドを実行してください。先ほどインストールした pip3 を用いて、OpenCVをインストールします。
 ```bash
-
+$ pip3 install opencv-python
+$ pip3 install opencv-contrib-python
 ```
+Numpy をインストールします。
+```bash
+$ pip3 install numpy
+```
+確認のため、pip3によりインストールしたモジュールたちをリスト表示します。
+```bash
+pip3 list
+```
+テストを実行します。
+```bash
+$ python3
+```
+``bash
+> import cv2
+> import cv2.__version__
+```
+これでバージョンが表示されたら成功です。続いて、Numpy も確認します。
+``bash
+> import numpy
+> import numpy.__version__
+```
+これでバージョンが表示されたら環境構築は完了です。
 
 # 1.Download
 ダウンロード環境は Ubuntu 20 を対象にしています。Windows でのダウンロードは今後サポート予定ですが、現在は推奨していません。
