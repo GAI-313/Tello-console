@@ -167,4 +167,6 @@ $ cd Tello-Console
 　カレントディレクトリ内にある work_space には、tello.py と簡易マニュアルが書かれた README.md があります。このディレクトリ内に新しいプログラムを作成し、Tello を飛ばしてみましょう。
  # Infomation
  Tello-Condsoleのtello.pyの詳細については、Infomation/README.md を参照してください
+   
+このリポジトリは定期的にアップデートを行います。アプデ内容はリリースノートに記述しますので、確認してください。
 
