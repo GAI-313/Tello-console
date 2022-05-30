@@ -18,7 +18,7 @@ x.x.x
 ModuleNotFoundError: No module named 'cv2'
 ```
 というエラーが、出ている場合、これは OpenCV が入っていないことを表しています。
-## OpenCV をインストールする
+## 1.1 OpenCV をインストールする
 　先ほどのコマンドで、エラー文を吐いたからはこのセクションをご覧ください。
  
 　はじめに、以下のコマンドを入力してください。
@@ -85,7 +85,7 @@ $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/
 ```
 インストールが完了したら、1つ前のコマンドを再実行してください。完了したら、**OpenCV をインストールする方法**のセクションと同様の手順でインストールを行なってください。
 
-# 1.Download
+## 1.2.Download
 ダウンロード環境は Ubuntu 20 を対象にしています。Windows でのダウンロードは今後サポート予定ですが、現在は推奨していません。
 以下のコマンドをターミナルで実行してください。ホームディレクトリに追加されます。
   
@@ -102,13 +102,13 @@ $ ls
 ```
 # 2.Try
 　ダウンロードが完了したら、実際にドローンをPCに接続して、サンプルプログラムを実行してみましょう。
-## 1.1 Tello EDU の WIFI に接続
+## 2.1 Tello EDU の WIFI に接続
 1. Ubuntuのデスクトップ画面右上の WIFI マークをクリック
 2. Select WI-FI もしくは WI-FI に接続…をクリック
 3. TELLO- から始めるホスト名をクリック
 4. Wi-Fi マークが？または接続マークが出たら成功
   
-## 1.2 sample-flight.py を実行
+## 2.2 sample-flight.py を実行
 1. ターミナルでTello-Console ディレクトリに移動します。
 ```bash
 $ cd Tello-Console
@@ -124,10 +124,14 @@ $ cd Tello-Console
  ```bash
  $ python3 sample-Flight.py
  ```
- ## 1.3 sample_video.py を実行
- このプログラムによりドローンは離陸しません。このプログラムでは、Open-CV を使ってドローンからカメラデータを取得し、映像を出力します。プログラムが実行されると、カメラウィンドウが表示され、ドローンからの映像がリアルタイムで表示されます。
-## 1.4 work_space で飛行プログラムを書いてみよう
+## 2.3 work_space で飛行プログラムを書いてみよう
 　カレントディレクトリ内にある work_space には、tello.py と簡易マニュアルが書かれた README.md があります。このディレクトリ内に新しいプログラムを作成し、Tello を飛ばしてみましょう。
+ 
+## 2.4 openCV を体験しよう
+　本ライブラリには OpenCVを使って、Tello のカメラビューを表示するシステムが備わっています。以下のプログラムを実行して Tello からのカメラビューを見てみましょう。
+```bash
+$ python3 ~/Tello-Console/sample_video.py
+```
  # Infomation
  Tello-Condsoleのtello.pyの詳細については、Infomation/README.md を参照してください
    
