@@ -84,6 +84,9 @@ brew を以下のコマンドでインストールします。
 $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```
 インストールが完了したら、1つ前のコマンドを再実行してください。完了したら、**OpenCV をインストールする方法**のセクションと同様の手順でインストールを行なってください。
+<br>
+### macOSによる問題
+　macOS Big Sur では、Mac の位置情報をオンにすると、Wi-Fi遅延が60秒間隔で増加する問題が報告されており、Intel、M1 チップ MacBook 全ての機種にこの問題があると推測されます。そのため、本ライブラリを使用する際は、**MacBook の位置情報サービスをオフにしてください。**
 
 ## 1.2.Download
 ダウンロード環境は Ubuntu 20 を対象にしています。Windows でのダウンロードは今後サポート予定ですが、現在は推奨していません。
