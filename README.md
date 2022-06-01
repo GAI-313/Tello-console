@@ -95,7 +95,7 @@ $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/
 ターミナルの立ち上げは、キーボードの Alt + Cntrl + T を押してください。そして、以下のコマンドを入力してください。 git clone を行った際、アカウント名とパスワードが要求されます。これは GitHub に再ナップしたメアドとパスワードを入力してください。
 ```bash
 $ cd
-$ git-clone https://github.com/GAI-313/Tello-Console.git
+$ git clone https://github.com/GAI-313/Tello-Console.git
 ```
 ホームディレクトリを確認し、ダウンロードが成功したかを確認してください
 ```bash
