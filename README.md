@@ -135,6 +135,7 @@ $ cd Tello-Console
 ```bash
 $ python3 ~/Tello-Console/sample_video.py
 ```
+Tello のビデオを扱ったスクリプトは、video ディレクトリにあります。（現在製作中）
  # Infomation
  Tello-Condsoleのtello.pyの詳細については、Infomation/README.md を参照してください
    
