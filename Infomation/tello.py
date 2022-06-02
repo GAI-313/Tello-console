@@ -28,12 +28,15 @@ class console():
         self.recv_thread.daemon = True
         self.recv_thread.start()
         # ビデオ受信の開始
-        self.send_cmd("command")
+        response = self.send_cmd("command")
+        if response == "None response":
+            print('\033[31m'+"接続エラー：ドローンに接続されていません。"+'\033[0m')
+            sys.exit()
         self.send_cmd("streamon")
         response = self.get_battery()
         response = int(response)
         if response <= 10:
-            print("バッテリー残量が少ないため、プログラムは中止されました。：残り {}% ".format(response))
+            print('\033[31m'+"バッテリー残量が少ないため、プログラムは中止されました。：残り {}% "+'\033[0m'.format(response))
             sys.exit()
         # ビデオ受信スレッド
         self.video_recv_thread = threading.Thread(target=self._video_recver)
@@ -59,9 +62,9 @@ class console():
             try:
                 self.response, ip = self.sock.recvfrom(3000)  
             except socket.error as se:
-                print ("予期せぬソケットエラー : %s" % se)
+                print ('\033[31m'+"予期せぬソケットエラー : %s"+'\033[0m' % se)
             except Exception as e:
-                print("レシーバーラー: %s" % e)
+                print('\033[31m'+"レシーバーラー: %s"+'\033[0m' % e)
     
     def _video_recver(self):
         """
@@ -76,13 +79,13 @@ class console():
                 ret, frame = self.cap.read()
                 self.frame = frame
             except Exception as e:
-                print("カメラレシーバーエラー: %s" % e)
+                print('\033[31m'+"カメラレシーバーエラー: %s"+'\033[0m' % e)
     
     def _timeout(self):
         """
         タイムアウトする前にコマンドを常時送信する。frag が上がったらスレッドがスタートする。
         """
-        print("TIMEOUT THREAD IS ACTIVATED")
+        print('\033[32m'+"SYSTEM IS ACTIVATED"+'\033[32m')
         current_time = time.time()
         pre_time = current_time
         while True:
@@ -95,7 +98,7 @@ class console():
                     break
                 else:
                     if current_time - pre_time == 10:
-                        print("timeout. send command")
+                        print('\033[33m'+"timeout. send command"+'\033[33m')
                         self.send_cmd("command")
             except:
                 break
@@ -118,7 +121,7 @@ class console():
         else:
             response = self.response.decode("utf-8")
         self.response = None
-        print("send command >>> {}: response >>> {}".format(cmd,response))
+        print('\033[37m'+"send command >>> {}: response >>> {}".format(cmd,response)+'\033[0m')
         return response
 
     def set_about_frag(self):
@@ -127,7 +130,7 @@ class console():
         この関数が呼ばれるということは、応答が来なくてタイムアウトしたということ。
         """
         self.about_frag = True
-        print("タイムアウト")
+        print('\033[33m'+"タイムアウト"+'\033[33m')
     
     def takeoff(self):
         """

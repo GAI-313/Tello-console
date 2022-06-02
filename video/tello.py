@@ -121,7 +121,7 @@ class console():
         else:
             response = self.response.decode("utf-8")
         self.response = None
-        print('\033[37m'+"send command >>> {}: response >>> {}"+'\033[0m'.format(cmd,response))
+        print('\033[37m'+"send command >>> {}: response >>> {}".format(cmd,response)+'\033[0m')
         return response
 
     def set_about_frag(self):
