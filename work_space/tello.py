@@ -31,12 +31,17 @@ class console():
         response = self.send_cmd("command")
         if response == "None response":
             print('\033[31m'+"接続エラー：ドローンに接続されていません。"+'\033[0m')
+            print('\033[33m'+"ヒント：Wi-Fiでドローンに接続してください。"+'\033[33m')
             sys.exit()
         self.send_cmd("streamon")
         response = self.get_battery()
         response = int(response)
-        if response <= 10:
-            print('\033[31m'+"バッテリー残量が少ないため、プログラムは中止されました。：残り {}% "+'\033[0m'.format(response))
+        if response == "None response":
+            print('\033[31m'+"ドローンとの接続に失敗しました。"+'\033[0m')
+            print('\033[33m'+"ヒント：再度プログラムを実行するか、ドローンを再起動してください。"+'\033[33m')
+        elif response <= 10:
+            print('\033[31m'+"バッテリー残量が少ないため、プログラムは中止されました。：残り {}% ".format(response)+'\033[0m')
+            print('\033[33m'+"ヒント：ドローンのバッテリーを交換、充電してください。"+'\033[33m')
             sys.exit()
         # ビデオ受信スレッド
         self.video_recv_thread = threading.Thread(target=self._video_recver)
@@ -102,6 +107,13 @@ class console():
                         self.send_cmd("command")
             except:
                 break
+    
+    def _exception_action(self, e):
+        self.stop()
+        self.land()
+        print('\033[33m'+e+'\033[33m')
+        print('\033[31m'+"上記のエラーによりプログラムは中断されました。"+'\033[0m')
+        sys.exit()
 
 # 使用可能ライブラリ群
     def send_cmd(self, cmd):
@@ -142,6 +154,7 @@ class console():
         self.send_cmd("command")
         self.timeout_frag = True
         return response
+
     def land(self):
         """
         着陸：全てのフローを中止して、着陸する。
