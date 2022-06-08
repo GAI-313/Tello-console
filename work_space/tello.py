@@ -36,13 +36,10 @@ class console():
         self.send_cmd("streamon")
         response = self.get_battery()
         response = int(response)
-        if response == "None response":
-            print('\033[31m'+"ドローンとの接続に失敗しました。"+'\033[0m')
-            print('\033[33m'+"ヒント：再度プログラムを実行するか、ドローンを再起動してください。"+'\033[33m')
-        elif response <= 10:
+        if response <= 10:
             print('\033[31m'+"バッテリー残量が少ないため、プログラムは中止されました。：残り {}% ".format(response)+'\033[0m')
-            print('\033[33m'+"ヒント：ドローンのバッテリーを交換、充電してください。"+'\033[33m')
             sys.exit()
+        self.batt = response
         # ビデオ受信スレッド
         self.video_recv_thread = threading.Thread(target=self._video_recver)
         self.video_recv_thread.daemon = True
@@ -114,6 +111,33 @@ class console():
         print('\033[33m'+e+'\033[33m')
         print('\033[31m'+"上記のエラーによりプログラムは中断されました。"+'\033[0m')
         sys.exit()
+    
+    def _error(self,cmd,response):
+        if cmd == "battery?":
+            pass
+        else:
+            if response == "error":
+                print('\033[31m'+"{} エラー".format(cmd)+'\033[0m')
+                if cmd == "land":
+                    print('\033[33m'+"ヒント：takeoff コマンドは書いていますか？"+'\033[33m')
+                elif "flip" in cmd:
+                    if self.batt <= 50:
+                        print('\033[33m'+"ヒント：バッテリー残量が 50 % 以下だとフリップできません。\n現在のバッテリー残量は{}%".format(self.batt)+'\033[33m')
+                else:
+                    print('\033[31m'+"致命的なエラー発生"+'\033[0m')
+                    print('\033[33m'+"ヒント：致命的なエラープログラムは強制停止します。"+'\033[33m')
+                    sys.exit()
+            elif response == "error Not joystick":
+                print('\033[31m'+"{} コントロールエラー\nコマンド：{}は無視されました。".format(cmd,cmd)+'\033[0m')
+                print('\033[33m'+"ヒント：一度に複数のコマンドを送信したことによる負荷エラーです。コマンドとコマンドの間に wait コマンドを使うなどして感覚を入れてください。"+'\033[33m')
+            
+            elif response == "error Auto land":
+                print('\033[31m'+"致命的なエラー発生"+'\033[0m')
+                print('\033[33m'+"ヒント：ローバッテリーによるプログラム停止。バッテリーを充電、交換して再実行してください！"+'\033[33m')
+                sys.exit()
+            elif response == "None response":
+                print('\033[33m'+"警告：レスポンスエラー。タスクが正常に機能しませんでした。"+'\033[33m')
+                    
 
 # 使用可能ライブラリ群
     def send_cmd(self, cmd):
@@ -134,6 +158,8 @@ class console():
             response = self.response.decode("utf-8")
         self.response = None
         print('\033[37m'+"send command >>> {}: response >>> {}".format(cmd,response)+'\033[0m')
+        if response != "ok":
+            self._error(cmd,response)
         return response
 
     def set_about_frag(self):
@@ -148,12 +174,15 @@ class console():
         """
         離陸
         """
-        response = self.send_cmd("takeoff")
-        print("安定化のため10秒ホバリング")
-        time.sleep(10)
-        self.send_cmd("command")
-        self.timeout_frag = True
-        return response
+        try:
+            response = self.send_cmd("takeoff")
+            print("安定化のため10秒ホバリング")
+            time.sleep(10)
+            self.send_cmd("command")
+            self.timeout_frag = True
+            return response
+        except Exception as e:
+            self._exception_action(e)
 
     def land(self):
         """
@@ -280,7 +309,7 @@ class console():
         """
         self.timeout_skipper_frag = True
         response = self.send_cmd("flip {}".format(dir))
-        time.sleep(2.5)
+        time.sleep(4)
         return response
     
     def go(self, x,y,z,speed):

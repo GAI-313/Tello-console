@@ -12,7 +12,7 @@ def main(): # メイン関数
         drone.land() # 着陸
     
     except KeyboardInterrupt: # Cntrol + C が押されたら以下の処理を実行
-        drone.emergency() # モーター停止
+        drone.land() # 強制着陸
     
     del drone
 
