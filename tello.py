@@ -38,6 +38,7 @@ class console():
         response = int(response)
         if response <= 10:
             print('\033[31m'+"バッテリー残量が少ないため、プログラムは中止されました。：残り {}% ".format(response)+'\033[0m')
+            print('\033[33m'+"ヒント：バッテリーを充電、交換してください。"+'\033[33m')
             sys.exit()
         self.batt = response
         # ビデオ受信スレッド
@@ -137,7 +138,13 @@ class console():
                 sys.exit()
             elif response == "None response":
                 print('\033[33m'+"警告：レスポンスエラー。タスクが正常に機能しませんでした。"+'\033[33m')
-                    
+            elif response == "out of range":
+                print('\033[31m'+"{} 引数エラー".format(cmd)+'\033[0m')
+                print('\033[33m'+"ヒント：定義された引数は設定可能範囲外です。"+'\033[33m')
+                sys.exit()
+            elif response == "error Motor stop":
+                print('\033[31m'+"{} モーター起動エラー".format(cmd)+'\033[0m')
+                print('\033[33m'+"ヒント：takeoff コマンドは書いていますか？"+'\033[33m')
 
 # 使用可能ライブラリ群
     def send_cmd(self, cmd):
