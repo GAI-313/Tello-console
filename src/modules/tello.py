@@ -16,6 +16,7 @@ class console():
         self.response = None #応答データ
         self.frame = None #ドローンカメラの映像データ
         self.cap = None # ドローンキャプチャデータ
+        self.frame_rotate = False # VPS アクセス時の画角補正初期値
         self.flight_speed = 100 # ドローンの水平飛行速度のデフォルト値
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #ソケット送受信ようソケット
         self.tello_address = (tello_ip, tello_port) # 通信用ipアドレス
@@ -24,10 +25,13 @@ class console():
         self.last_height = 0 # 飛行高度初期値
         self.sock.bind(("", 8889))
         #コマンド応答受信スレッド
-        self.recv_thread = threading.Thread(target=self._recver)
-        self.recv_thread.daemon = True
-        self.recv_thread.start()
+        self.recv_thread = threading.Thread(target=self._recver) # レスポンススレッドの構築
+        self.recv_thread.daemon = True # プログラム終了時に共に死ぬようにする
+        self.recv_thread.start() # レスポンススレッド軌道
         # ビデオ受信の開始
+        """
+        ここで tello と接続が確立されているか、バッテリー残量が十分にあるかを診断する。
+        """
         response = self.send_cmd("command")
         if response == "None response":
             print('\033[31m'+"接続エラー：ドローンに接続されていません。"+'\033[0m')
@@ -46,6 +50,9 @@ class console():
         self.video_recv_thread.daemon = True
         self.video_recv_thread.start()
         # タイムアウトカウンタースレッドの構築
+        """
+        tello は 15秒以上コマンドが来ないと自動で着陸するようになっている。それを回避するために飛行時に敵的なコマンドを送信するスレッドを回す。
+        """
         self.timeout_frag = False
         self.timeout_skipper_frag = False
         self.timeout_thread = threading.Thread(target=self._timeout)
@@ -80,7 +87,10 @@ class console():
         while True:
             try:
                 ret, frame = self.cap.read()
-                self.frame = frame
+                if self.frame_rotate is True:
+                    self.frame = cv2.rotate(frame,cv2.ROTATE_90_CLOCKWISE)
+                else:
+                    self.frame = frame
             except Exception as e:
                 print('\033[31m'+"カメラレシーバーエラー: %s"+'\033[0m' % e)
     
@@ -107,6 +117,9 @@ class console():
                 break
     
     def _exception_action(self, e):
+        """
+        致命的なエラーが発生した際に強制的にプログラムを停止させるメゾット。いかなるプログラムより優先される。
+        """
         self.stop()
         self.land()
         print('\033[33m'+e+'\033[33m')
@@ -114,6 +127,9 @@ class console():
         sys.exit()
     
     def _error(self,cmd,response):
+        """
+        ドローンからの応答によるエラーを分析する。状況によってプログラムを停止させる。
+        """
         if cmd == "battery?":
             pass
         else:
@@ -387,6 +403,59 @@ class console():
         response = self.send_cmd("battery?")
         return response
     
+    def get_tof(self):
+        """
+        VPS tof センサーからの高度を取得。
+        単位：mm
+        最低レンジ：100mm
+        応答：int
+        """
+        self.timeout_skipper_frag = True
+        response = self.send_cmd("tof?")[:4]
+        return int(response)
+    
+    def get_temp(self):
+        """
+        機体温度を取得
+        単位：℃
+        最低レンジ：0
+        応答：int
+        """
+        self.timeout_skipper_frag = True
+        response = self.send_cmd("temp?")#[:4]
+        #return int(response)
+        return response
+    
+    def get_attitude(self):
+        """
+        IMU からの三次元姿勢角を取得。
+        応答：int,int,int
+        """
+        self.timeout_skipper_frag = True
+        response = self.send_cmd("attitude?")
+        if response == "None response":
+            pass
+        response = response.split()
+        pitch = int(response[0])
+        roll = int(response[1])
+        yaw = int(response[2])
+        return pitch,roll,yaw
+    
+    def get_acceleration(self):
+        """
+        IMU からの三次元角速度を取得。
+        応答：int,int,int
+        """
+        self.timeout_skipper_frag = True
+        response = self.send_cmd("acceleration?")
+        if response == "None response":
+            pass
+        response = response.split()
+        x = int(response[0])
+        y = int(response[1])
+        z = int(response[2])
+        return x,y,z
+    
     def downvision(self, dir):
         """
         下方カメラ情報を取得：
@@ -397,6 +466,12 @@ class console():
         メインカメラのデータ流す
 
         self.frame にデータが受け取られる。
+
+        VPS アクセスが渡されたらカメラの画角を90度回転させる。
         """
         self.timeout_skipper_frag = True
+        if dir == 1:
+            self.frame_rotate = True
+        else:
+            self.frame_rotate = False
         return self.send_cmd("downvision {}".format(dir))
