@@ -379,6 +379,17 @@ class console():
         time.sleep(0.5)
         return response
     
+    def start_mortor(self):
+        """
+        モーター起動/停止
+        """
+        self.timeout_skipper_frag = True
+        self.send_cmd("rc -100 -100 -100 100")
+        time.sleep(1)
+        self.send_cmd("rc 0 0 0 0")
+        response = 'ok'
+        return response
+    
     def wait(self,sec):
         """
         ドローンを待機させる returnなし
@@ -411,8 +422,11 @@ class console():
         応答：int
         """
         self.timeout_skipper_frag = True
-        response = self.send_cmd("tof?")[:4]
-        return int(response)
+        height = self.send_cmd("tof?")
+        if height is None:
+            height = "0mm"
+        response = height[:len(height)-4]
+        return response
     
     def get_temp(self):
         """
