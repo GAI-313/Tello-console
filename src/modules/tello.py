@@ -10,7 +10,7 @@ import cv2
 import sys
 
 class console():
-    def __init__(self,cmd_timeout=3, tello_ip='192.168.10.1', tello_port=8889):
+    def __init__(self,cmd_timeout=1, tello_ip='192.168.10.1', tello_port=8889):
         self.about_frag = False #中断フラグ
         self.cmd_timeout = cmd_timeout #タイムアウト時間
         self.response = None #応答データ
@@ -108,7 +108,7 @@ class console():
                     self.timeout_skipper_frag = False
                     continue
                 if self.timeout_frag is False:
-                    break
+                    continue
                 else:
                     if current_time - pre_time == 10:
                         print('\033[33m'+"timeout. send command"+'\033[33m')
@@ -165,6 +165,7 @@ class console():
 # 使用可能ライブラリ群
     def send_cmd(self, cmd):
         """
+        引数: cmd (Tello-SDK コマンド, str)
         コマンドを送信するメゾット
         """
         self.about_frag = False # 中断フラグを倒す
@@ -191,7 +192,7 @@ class console():
         この関数が呼ばれるということは、応答が来なくてタイムアウトしたということ。
         """
         self.about_frag = True
-        print('\033[33m'+"タイムアウト"+'\033[33m')
+        print('\033[33m'+""+'\033[33m')
     
     def takeoff(self):
         """
@@ -229,8 +230,8 @@ class console():
     
     def speed(self, cm):
         """
+        引数: cm (20 ~ 500 : int)
         スピード設定：ドローンの水平飛行速度を設定。
-        引数: cm (50 ~ 500 : int)
         """
         self.timeout_skipper_frag = True
         self.flight_speed = cm
