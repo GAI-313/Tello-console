@@ -4,6 +4,7 @@
 import re
 import socket
 import threading
+from tkinter import Y
 import numpy as np
 import time
 import cv2
@@ -60,9 +61,9 @@ class console():
         self.timeout_thread.start()
 
     def __del__(self):
-        """ローカル通信を閉じる"""
-        self.sock.close()
+        """ローカル通信を閉じる""" 
         print("Done")
+        self.sock.close()
     
     def _recver(self):
         """
@@ -447,29 +448,32 @@ class console():
         応答：int,int,int
         """
         self.timeout_skipper_frag = True
-        response = self.send_cmd("attitude?")
-        if response == "None response":
+        res = self.send_cmd("attitude?")
+        x,y,z = None
+        if res == 'None response' or res is None:
             pass
-        response = response.split()
-        pitch = int(response[0])
-        roll = int(response[1])
-        yaw = int(response[2])
-        return pitch,roll,yaw
+        else:
+            response = re.findall(r"\d+", res)
+            x = int(response[0])
+            y = int(response[1])
+            z = int(response[2])
+        return x,y,z
     
     def get_acceleration(self):
         """
         IMU からの三次元角速度を取得。
-        応答：int,int,int
+        応答：agx, agy, agz
         """
         self.timeout_skipper_frag = True
-        response = self.send_cmd("acceleration?")
-        if response == "None response":
+        res = self.send_cmd("acceleration?")
+        if res == 'None response':
             pass
-        response = response.split()
-        x = int(response[0])
-        y = int(response[1])
-        z = int(response[2])
-        return x,y,z
+        else:
+            response = re.findall(r"\d+", res)
+            agx = int(response[0])
+            agy = int(response[2])
+            agz = int(response[4])
+            return agx,agy,agz
     
     def downvision(self, dir):
         """
